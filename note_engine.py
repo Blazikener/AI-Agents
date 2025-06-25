@@ -1,19 +1,21 @@
-from llama.index.core.tools import FunctionTool
+from llama_index.core.tools import FunctionTool
 import os
 
 note_file = os.path.join("data", "notes.txt")
-def read_notes():
-    """Read notes from the file."""
+
+
+def save_note(note):
     if not os.path.exists(note_file):
-        return "No notes found."
-    with open(note_file, "r") as file:
-        return file.read()
+        open(note_file, "w")
 
-    return "Note saved successfully."
+    with open(note_file, "a") as f:
+        f.writelines([note + "\n"])
 
-note_engine = FunctionTool.from_default(
+    return "note saved"
+
+
+note_engine = FunctionTool.from_defaults(
+    fn=save_note,
     name="note_saver",
     description="this tool can save a text based note to a file for the user",
-    fn=save_notes,
 )
-print("Note engine initialized with read_notes function.")
